@@ -1,0 +1,115 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Задания — Банк задач ЕГЭ{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <h1>Все задания</h1>
+    <p>
+        Здесь собраны задания для тренировки.
+        Используйте поиск и фильтры, чтобы быстро найти нужный раздел.
+    </p>
+</section>
+
+<section class="filters-panel">
+    <form method="get" class="filters-form">
+        <div class="search-field">
+            <label for="q">Поиск по заданиям</label>
+            <input
+                type="text"
+                id="q"
+                name="q"
+                value="{{ search_query }}"
+                placeholder="Например: уравнение, вероятность, график"
+            >
+        </div>
+
+        <div class="filters-row">
+            <div class="filter-field">
+                <label for="topic">Тема</label>
+                <select id="topic" name="topic">
+                    <option value="">Все темы</option>
+
+                    {% for topic in topics %}
+                        <option
+                            value="{{ topic.id }}"
+                            {% if selected_topic == topic.id|stringformat:'s' %}selected{% endif %}
+                        >
+                            {{ topic.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="difficulty">Сложность</label>
+                <select id="difficulty" name="difficulty">
+                    <option value="">Любая сложность</option>
+
+                    {% for value, label in difficulty_choices %}
+                        <option
+                            value="{{ value }}"
+                            {% if selected_difficulty == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="button button-primary">
+                    Применить
+                </button>
+
+                <a href="{% url 'task_list' %}" class="button button-secondary">
+                    Сбросить
+                </a>
+            </div>
+        </div>
+    </form>
+</section>
+
+<section class="results-summary">
+    <p>
+        Найдено заданий: <strong>{{ tasks_count }}</strong>
+    </p>
+</section>
+
+<div class="cards-grid">
+    {% for task in tasks %}
+        <article class="task-card">
+            <div class="task-card-top">
+                <span class="badge">№{{ task.number }}</span>
+                <span class="difficulty difficulty-{{ task.difficulty }}">
+                    {{ task.get_difficulty_display }}
+                </span>
+            </div>
+
+            <h3>{{ task.title }}</h3>
+
+            <p class="muted">
+                Тема: {{ task.topic.name }}
+            </p>
+
+            <p>
+                {{ task.condition|truncatechars:120 }}
+            </p>
+
+            <a href="{% url 'task_detail' task.id %}" class="button button-small">
+                Открыть задание
+            </a>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h3>Ничего не найдено</h3>
+            <p>
+                Попробуйте изменить тему, сложность или поисковый запрос.
+            </p>
+            <a href="{% url 'task_list' %}" class="button button-primary">
+                Сбросить фильтры
+            </a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

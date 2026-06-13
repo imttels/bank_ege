@@ -1,0 +1,42 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Темы — Банк задач ЕГЭ{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <h1>Темы заданий</h1>
+    <p>
+        Выберите тему, чтобы открыть задания только по нужному разделу.
+    </p>
+</section>
+
+<div class="topic-grid">
+    {% for topic in topics %}
+        <article class="topic-card">
+            <div class="topic-icon">
+                {{ forloop.counter }}
+            </div>
+
+            <h3>{{ topic.name }}</h3>
+
+            {% if topic.description %}
+                <p>{{ topic.description }}</p>
+            {% endif %}
+
+            <div class="topic-footer">
+                <p>Всего: {{ topic.total_tasks }}</p>
+                <p>База: {{ topic.base_tasks }}</p>
+                <p>Профиль: {{ topic.profile_tasks }}</p>
+
+                <a href="{% url 'tasks_by_topic' topic.id %}" class="button button-small">
+                    Открыть
+                </a>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h3>Тем пока нет</h3>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

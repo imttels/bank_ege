@@ -1,0 +1,112 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Задание №{{ task.number }} — Банк задач ЕГЭ{% endblock %}
+
+{% block content %}
+<section class="task-detail">
+    <div class="task-detail-header">
+        <div>
+            <p class="eyebrow">Задание</p>
+            <h1>№{{ task.number }}. {{ task.title }}</h1>
+        </div>
+
+        <div class="task-meta">
+            <span class="badge">{{ task.topic.name }}</span>
+            <span class="difficulty difficulty-{{ task.difficulty }}">
+                {{ task.get_difficulty_display }}
+            </span>
+        </div>
+    </div>
+
+    <div class="task-detail-card">
+        <h2>Условие</h2>
+        <p class="task-condition">
+            {{ task.condition|linebreaksbr }}
+        </p>
+        {% if task.condition_image %}
+        <div class="task-image-wrapper">
+            <img
+                src="{{ task.condition_image.url }}"
+                alt="Изображение к условию задания"
+                class="task-image"
+            >
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="answer-card">
+        <h2>Ваш ответ</h2>
+
+        <form method="post" class="answer-form">
+            {% csrf_token %}
+
+            <label for="user_answer">Введите ответ:</label>
+
+            <div class="answer-row">
+                <input
+                    type="text"
+                    id="user_answer"
+                    name="user_answer"
+                    value="{{ user_answer }}"
+                    placeholder="Например: 42"
+                    required
+                >
+
+                <button type="submit" class="button button-primary">
+                    Проверить
+                </button>
+            </div>
+        </form>
+
+        {% if result == "correct" %}
+            <div class="result-box result-correct">
+                <h3>Верно!</h3>
+                <p>Ответ «{{ user_answer }}» правильный.</p>
+            </div>
+
+            {% if task.explanation or task.explanation_image %}
+                <div class="explanation-box">
+                    <h3>Пояснение</h3>
+                    <p>{{ task.explanation|linebreaksbr }}</p>
+                    {% if task.explanation_image %}
+                        <div class="task-image-wrapper">
+                            <img
+                                src="{{ task.explanation_image.url }}"
+                                alt="Изображение к пояснению решения"
+                                class="task-image"
+                            >
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        {% elif result == "wrong" %}
+            <div class="result-box result-wrong">
+                <h3>Неверно</h3>
+                <p>Ваш ответ: «{{ user_answer }}»</p>
+                <p>Правильный ответ: <strong>{{ task.answer }}</strong></p>
+            </div>
+
+            {% if task.explanation or task.explanation_image %}
+                <div class="explanation-box">
+                    <h3>Пояснение</h3>
+                    <p>{{ task.explanation|linebreaksbr }}</p>
+                    {% if task.explanation_image %}
+                    <div class="task-image-wrapper">
+                        <img
+                            src="{{ task.explanation_image.url }}"
+                            alt="Изображение к пояснению решения"
+                            class="task-image"
+                        >
+                    </div>
+                {% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'task_list' %}">← Вернуться ко всем заданиям</a>
+    </div>
+</section>
+{% endblock %}

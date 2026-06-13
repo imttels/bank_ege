@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Банк задач ЕГЭ{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="{% url 'home' %}" class="logo">ЕГЭ Банк</a>
+
+            <nav class="nav">
+                <a href="{% url 'home' %}">Главная</a>
+                <a href="{% url 'task_list' %}">Задания</a>
+                <a href="{% url 'topic_list' %}">Темы</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

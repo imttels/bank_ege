@@ -1,0 +1,86 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}Главная — Банк задач ЕГЭ{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <h1>Банк задач ЕГЭ для тренировки</h1>
+        <p>
+            Выбирайте задания, решайте, проверяйте ответы и смотрите пояснения.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{% url 'task_list' %}" class="button button-primary">
+                Перейти к заданиям
+            </a>
+        </div>
+    </div>
+
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Темы</h2>
+        <a href="{% url 'topic_list' %}">Все темы</a>
+    </div>
+
+    <div class="topic-grid">
+        {% for topic in topics %}
+            <article class="topic-card">
+                <div class="topic-icon">
+                    {{ forloop.counter }}
+                </div>
+
+                <h3>{{ topic.name }}</h3>
+
+                {% if topic.description %}
+                    <p>{{ topic.description }}</p>
+                {% endif %}
+
+                <div class="topic-footer">
+                    <p>Всего: {{ topic.total_tasks }}</p>
+                    <p>База: {{ topic.base_tasks }}</p>
+                    <p>Профиль: {{ topic.profile_tasks }}</p>
+
+                    <a href="{% url 'tasks_by_topic' topic.id %}" class="button button-small">
+                        Открыть
+                    </a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h3>Тем пока нет</h3>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Задания</h2>
+        <a href="{% url 'task_list' %}">Смотреть все</a>
+    </div>
+
+    <div class="cards-grid">
+        {% for task in latest_tasks %}
+            <article class="task-card">
+                <div class="task-card-top">
+                    <span class="badge">№{{ task.number }}</span>
+                    <span class="difficulty difficulty-{{ task.difficulty }}">
+                        {{ task.get_difficulty_display }}
+                    </span>
+                </div>
+
+                <h3>{{ task.title }}</h3>
+                <p class="muted">{{ task.topic.name }}</p>
+                <a href="{% url 'task_detail' task.id %}" class="button button-small">
+                    Решить
+                </a>
+            </article>
+        {% empty %}
+            <p>Пока заданий нет.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

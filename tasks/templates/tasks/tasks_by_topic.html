@@ -1,0 +1,47 @@
+{% extends "tasks/base.html" %}
+
+{% block title %}{{ topic.name }} — Банк задач ЕГЭ{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Тема</p>
+    <h1>{{ topic.name }}</h1>
+
+    {% if topic.description %}
+        <p>{{ topic.description }}</p>
+    {% endif %}
+
+    <div class="heading-actions">
+        <a href="{% url 'topic_list' %}" class="button button-secondary">
+            Все темы
+        </a>
+    </div>
+</section>
+
+<div class="cards-grid">
+    {% for task in tasks %}
+        <article class="task-card">
+            <div class="task-card-top">
+                <span class="badge">№{{ task.number }}</span>
+                <span class="difficulty difficulty-{{ task.difficulty }}">
+                    {{ task.get_difficulty_display }}
+                </span>
+            </div>
+
+            <h3>{{ task.title }}</h3>
+
+            <p>
+                {{ task.condition|truncatechars:120 }}
+            </p>
+
+            <a href="{% url 'task_detail' task.id %}" class="button button-small">
+                Открыть задание
+            </a>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h3>По этой теме пока нет заданий</h3>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
